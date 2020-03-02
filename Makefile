@@ -13,19 +13,25 @@ SIZE=${CROSS}size
 
 TARGET = sample
 
+CURDIR  = .
+OBJDIR	= $(CURDIR)/obj
+SRCDIR  = $(CURDIR)/src
+
 SRCS = sample.s
 
-HEX		= $(TARGET).hex
-BIN		= $(TARGET).bin
-ELF		= $(TARGET).elf
-MAP		= $(TARGET).map
-LST		= $(TARGET).lst
+HEX		= $(OBJDIR)/$(TARGET).hex
+BIN		= $(OBJDIR)/$(TARGET).bin
+ELF		= $(OBJDIR)/$(TARGET).elf
+MAP		= $(OBJDIR)/$(TARGET).map
+LST		= $(OBJDIR)/$(TARGET).lst
+VLG		= $(OBJDIR)/$(TARGET).v
 
-OBJS	:= $(SRCS)
+OBJS	:= $(addprefix $(OBJDIR)/, $(addsuffix .o,$(basename $(SRCS))))
 OBJS	:= $(OBJS:.c=.o)
 OBJS	:= $(OBJS:.s=.o)
 OBJS	:= $(OBJS:.S=.o)
 
+VPATH   := $(SRCDIR) 
 
 # C options
 CFLAGS	= -c -g -Wall -EL -mips1
@@ -40,7 +46,7 @@ LDFLAGS	+= -T $(TARGET).ld
 .PHONY: all start
 
 
-all: start $(ELF) $(HEX) $(BIN) $(LST) $(OK)
+all: start $(ELF) $(HEX) $(VLG) $(BIN) $(LST) $(OK)
 
 build: clean all
 
@@ -63,22 +69,26 @@ $(BIN): $(ELF)
 	@echo --- make binary...
 	@$(OBJCOPY) --gap-fill 0 -S -O binary $(ELF) $(BIN)
 
+$(VLG): $(ELF)
+	@echo --- make verlog...
+	@$(OBJCOPY) --gap-fill 0 -S -O verilog $(ELF) $(VLG)
+
 $(ELF):	$(OBJS)
 	@echo --- linking...
 	$(LD) $(OBJS) $(LDFLAGS) -o "$(ELF)"
-	
-%.o: %.c
+
+$(OBJDIR)/%.o: %.c
 	@echo --- compiling $<...
 	$(CC) $(CFLAGS) -o $@ $<
 
-%.o: %.S
+$(OBJDIR)/%.o: %.S
 	@echo --- assembling $<...
 	$(CC) $(CFLAGS) -o $@ $<
 
-%.o: %.s
+$(OBJDIR)/%.o: %.s
 	@echo --- assembling $<...
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
 	-@$(RM) $(OBJS) $(OBJS:.o=.lst)
-	-@$(RM) $(ELF) $(HEX) $(BIN) $(LST) $(MAP)
+	-@$(RM) $(ELF) $(HEX) $(BIN) $(LST) $(VLG) $(MAP)
