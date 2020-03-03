@@ -9,15 +9,13 @@ OBJCOPY=${CROSS}objcopy
 OBJDUMP=${CROSS}objdump
 SIZE=${CROSS}size
 
-
-
-TARGET = sample
+TARGET = paectrl
 
 CURDIR  = .
 OBJDIR	= $(CURDIR)/obj
 SRCDIR  = $(CURDIR)/src
 
-SRCS = sample.s
+SRCS = start.s main.c
 
 HEX		= $(OBJDIR)/$(TARGET).hex
 BIN		= $(OBJDIR)/$(TARGET).bin
