@@ -9,13 +9,15 @@ OBJCOPY=${CROSS}objcopy
 OBJDUMP=${CROSS}objdump
 SIZE=${CROSS}size
 
+#TARGET = instruction
+#SRCS = instruction.s
+
 TARGET = paectrl
+SRCS = start.s main.c
 
 CURDIR  = .
 OBJDIR	= $(CURDIR)/obj
 SRCDIR  = $(CURDIR)/src
-
-SRCS = start.s main.c
 
 HEX		= $(OBJDIR)/$(TARGET).hex
 BIN		= $(OBJDIR)/$(TARGET).bin
@@ -43,7 +45,6 @@ LDFLAGS	+= -T $(TARGET).ld
 
 .PHONY: all start
 
-
 all: start $(ELF) $(HEX) $(VLG) $(BIN) $(LST) $(OK)
 
 build: clean all
@@ -53,7 +54,7 @@ start:
 
 $(LST): $(ELF)
 	@echo --- making asm-lst...
-	@$(OBJDUMP) -D -EL $(ELF) > $(LST)
+	@$(OBJDUMP) -d -EL $(ELF) > $(LST)
 
 $(OK): $(ELF)
 	@$(SIZE) $(ELF)

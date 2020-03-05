@@ -6,7 +6,7 @@
 .global  _start
 
 .data
-	N:       .word  5
+	N:			.word  5
 	
 .text
 _start:
@@ -15,7 +15,11 @@ _start:
     lw     $t1, N($gp)       # fetch N
     ori    $t2, $zero, 3     # 3
     mul    $t1, $t1, $t2     # 3*N
-    add    $t2, $t0, $t1     # N*N + 3*N
+    addu   $t2, $t0, $t1     # N*N + 3*N
     sw     $t2, N($gp)       # i = ...
 end:
 	j 		end				 # done
+
+.data
+	N:       .word  5
+

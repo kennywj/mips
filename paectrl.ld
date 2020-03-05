@@ -16,9 +16,14 @@ SECTIONS
 		. = ALIGN(4);
 		*(.text)        /* .text sections (code) */
 		. = ALIGN(4);
+	} > CODE
+	
+	.MIPS.abiflags :
+	{
+		*(.MIPS.abiflags*)        /* .text sections (code) */
 		_etext = .;     /*define a global symbols at end of code */
 	} > CODE
-
+	
 	.data : AT ( _etext )
     {
 		_sdata = .;     /*define a global symbols at end of code */

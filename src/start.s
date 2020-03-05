@@ -7,9 +7,6 @@
 .global  _start
 .extern	 main
 	
-
-/* stack used for SystemInit_ExtMemCtl; always internal RAM used */
-
 .text
 _start:
 	la		$gp, _sdata
